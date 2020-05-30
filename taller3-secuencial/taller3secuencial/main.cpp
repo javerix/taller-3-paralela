@@ -22,59 +22,63 @@ struct datos{
 };
 
 struct puntajes{
-    unsigned float promedio;
-    unsigned float desviacion;
-    unsigned float mediana;
-    unsigned float moda;
+    float promedio;
+    float desviacion;
+    float mediana;
+    float moda;
 };
-
 
 int contador=0;
 datos prueba;
 puntajes NEM, RANKING, MATEMATICA, LENGUAJE, CIENCIA, HISTORIA;
-float prom;
+
+int *listaNEM = new int [5015751];
+int *listaRAN = new int [5015751];
+int *listaMAT = new int [5015751];
+int *listaLEN = new int [5015751];
+int *listaCIE = new int [5015751];
+int *listaHIS = new int [5015751];
 
 
-void ordenar(vector x, int n)
+void ordenar(int x[], int n) //Metodo de ordenamiento seleccion
 {
-    int aux;
-    for(int i=0; i<n; i++)
-    {
-        for(int j=0; j<n; j++){
-            if(x[j+1] < x[j]){
-                aux = x[j];
-                x[j] = x[j+1];
-                x[j+1] = aux;
-            }
+    int i, j, aux;
+    for(i=1; i<n; i++){
+        j=i-1;
+        aux=x[i];
+        while((j>-1)&&(aux<x[j])){
+            x[j+1]=x[j];
+            j--;
         }
+        x[j+1]=aux;
     }
 }
 
-void desmedmod(vector x, int n, puntajes p)
+void desmedmod(int x[], int n, puntajes p)
 {
     float prome = p.promedio;
     float acumulador = 0, aux; // El acumulador es La sumatoria de (Xi - Xpromedio) al cuadrado, y el otro para dividir por n aplicar raiz cuadrada
-    int contador = 0, contmoda = 0, aux2; //Primero es el contador y otro es el contador de una moda
+    int cont = 0, contmoda = 0, aux2; //Primero es el contador y otro es el contador de una moda
     float xmoda= 0, x2 = 0; //Para obtener el puntaje en moda
     for(int i=0; i<n; i++)
     {
         acumulador = acumulador + ((x[i] - prome)*(x[i] - prome));
         if(x[i+1] =! x2) //En caso de que la posicion siguiente es distinto a la actual
         {
-            contador++;
-            if(contador > contmoda){ //Se verifica si el contador es mayor la de moda
+            cont++;
+            if(cont > contmoda){ //Se verifica si el contador es mayor la de moda
                 xmoda = x2;
-                contmoda = contador;
+                contmoda = cont;
                 
             }
             if(x[i+1]!=NULL){
                 acumulador = acumulador + ((x[i+1] - prome)*(x[i+1] - prome));
             }
             x2 = x[i+1]; //Se reinicia para contar el dato que se encuentre actualmente
-            contador = 0;
+            cont = 0;
             i++;         
         }
-        contador++;
+        cont++;
     }
     aux = sqrt(acumulador/n); 
     aux2 = n/2; //Para obtener la posición intermedia del arreglo
@@ -84,6 +88,7 @@ void desmedmod(vector x, int n, puntajes p)
 }
 
 void promedio(unsigned int suma, puntajes p){
+    float prom;
     prom = suma /(float)contador;
     p.promedio = prom;
 } 
@@ -128,7 +133,7 @@ void imprimir()
 }
 
 void generarresultado(){
-    int a=0;
+    int a=0, ne=0, ra=0, ma=0, le=0, ci=0, hi=0;
     ifstream  lectura; 
     lectura.open("puntajes.csv",ios::in);
     for(std::string linea; std::getline(lectura,linea); ){
@@ -137,39 +142,47 @@ void generarresultado(){
         std::string dato;
         for(int columna = 0; std::getline(registro, dato, ';'); columna++){
             switch (columna){
-            case 0:
-                //std::cout << dato << "  rut" << std::endl;
-                //prueba.rut = dato;
-                break;
             case 1:
                 //fpromedio(dato, prueba.nem);
                 contador++;
                 prueba.nem = prueba.nem + std::stof(dato);
+                listaNEM[ne]=std::stoi(dato);
+                ne++;
                 break;
             case 2:
                 //contadorR++;
                 //std::cout << dato << "  ranking" << std::endl;
                 prueba.ranking = prueba.ranking + std::stof(dato);
+                listaRAN[ra]=std::stoi(dato);
+                ra++;
                 break;
             case 3:
                 //contadorM++;
                 //std::cout << dato << "  matematica" << std::endl;
                 prueba.matematica = prueba.matematica + std::stof(dato);
+                listaMAT[ma]=std::stoi(dato);
+                ma++;
                 break;
             case 4:
                 //contadorL++;
                 //std::cout << dato << "  lenguaje" << std::endl;
                 prueba.lenguaje = prueba.lenguaje + std::stof(dato);
+                listaLEN[le]=std::stoi(dato);
+                le++;
                 break;
             case 5:
                 //contadorC++;
-                //std::cout << dato << "  historia" << std::endl;
+                //std::cout << dato << "  ciencia" << std::endl;
                 prueba.ciencias = prueba.ciencias + std::stof(dato);
+                listaCIE[ci]=std::stoi(dato);
+                ci++;
                 break;
             case 6:
                 //contadorH++;
-                //std::cout << dato << "  ciencia" << std::endl;
+                //std::cout << dato << "  historia" << std::endl;
                 prueba.historia = prueba.historia + std::stof(dato);
+                listaHIS[hi]=std::stoi(dato);
+                hi++;
             break;
             }
 
@@ -178,12 +191,27 @@ void generarresultado(){
             break;
         }*/
     }
+    
     promedio(prueba.nem, NEM);
     promedio(prueba.ranking, RANKING);
     promedio(prueba.matematica, MATEMATICA);
     promedio(prueba.lenguaje, LENGUAJE);
     promedio(prueba.ciencias, CIENCIA);
     promedio(prueba.historia, HISTORIA);
+    
+    ordenar(listaNEM, contador);
+    ordenar(listaRAN, contador);
+    ordenar(listaMAT, contador);
+    ordenar(listaLEN, contador);
+    ordenar(listaCIE, contador);
+    ordenar(listaHIS, contador);
+    
+    desmedmod(listaNEM, contador, NEM);
+    desmedmod(listaRAN, contador, RANKING);
+    desmedmod(listaMAT, contador, MATEMATICA);
+    desmedmod(listaLEN, contador, LENGUAJE);
+    desmedmod(listaCIE, contador, CIENCIA);
+    desmedmod(listaHIS, contador, HISTORIA);
     
     imprimir();
 }
@@ -192,6 +220,11 @@ void generarresultado(){
 int main(int argc, char** argv) {
     std::cout << "Taller 3: C++ secuencial" << std::endl;
     generarresultado();
+    delete [] listaNEM;
+    delete [] listaRAN;
+    delete [] listaMAT;
+    delete [] listaLEN;
+    delete [] listaCIE;
+    delete [] listaHIS;
     return EXIT_SUCCESS;
-    
 }
