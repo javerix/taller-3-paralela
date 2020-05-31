@@ -9,8 +9,6 @@
 
 using namespace std;
 
-
-
 struct datos{
     std::string rut;
     unsigned int ranking;
@@ -31,6 +29,11 @@ struct puntajes{
 int contador=0;
 datos prueba;
 puntajes NEM, RANKING, MATEMATICA, LENGUAJE, CIENCIA, HISTORIA;
+float prom;
+float des;
+float med;
+float mod;
+
 
 int *listaNEM = new int [5015751];
 int *listaRAN = new int [5015751];
@@ -54,43 +57,44 @@ void ordenar(int x[], int n) //Metodo de ordenamiento seleccion
     }
 }
 
-void desmedmod(int x[], int n, puntajes p)
-{
+void desmedmod(int x[], int n, puntajes p){
+    //std:cout<<"dentro de la funcion desviacion"<<endl;
     float prome = p.promedio;
-    float acumulador = 0, aux; // El acumulador es La sumatoria de (Xi - Xpromedio) al cuadrado, y el otro para dividir por n aplicar raiz cuadrada
-    int cont = 0, contmoda = 0, aux2; //Primero es el contador y otro es el contador de una moda
-    float xmoda= 0, x2 = 0; //Para obtener el puntaje en moda
-    for(int i=0; i<n; i++)
-    {
+    //std::cout<< prome <<" promedio guardado nem a utilizar "<<p.promedio<<" promedio obtenido anteripomente"<<endl;
+    //std::cout<<n<<" cantidad de datos en desviacion"<<endl;
+    float acumulador = 0; // El acumulador es La sumatoria de (Xi - Xpromedio) al cuadrado, y el otro para dividir por n aplicar raiz cuadrada
+    int aux2; 
+    int cont = 0, contmoda = 0, xmoda=0, aux=0;
+    for(int i=0; i<n; i++){
         acumulador = acumulador + ((x[i] - prome)*(x[i] - prome));
-        if(x[i+1] =! x2) //En caso de que la posicion siguiente es distinto a la actual
-        {
-            cont++;
-            if(cont > contmoda){ //Se verifica si el contador es mayor la de moda
-                xmoda = x2;
+        if(x[i]!=aux || i+1 == n){
+            if(i+1 ==n){
+                cont++;
+            }
+            if(cont > contmoda){
                 contmoda = cont;
-                
+                xmoda = i-1;
             }
-            if(x[i+1]!=NULL){
-                acumulador = acumulador + ((x[i+1] - prome)*(x[i+1] - prome));
-            }
-            x2 = x[i+1]; //Se reinicia para contar el dato que se encuentre actualmente
+            aux = x[i];
             cont = 0;
-            i++;         
         }
-        cont++;
+        cont = cont + 1;
     }
-    aux = sqrt(acumulador/n); 
-    aux2 = n/2; //Para obtener la posición intermedia del arreglo
-    p.desviacion = aux;
-    p.mediana = x[aux2];
-    p.moda = xmoda;
+    //std::cout<<acumulador<<" acumulador de la sumatoria de la difereancia de cada dato menos el promedio al cuadrado"<<endl;
+    des = sqrt(acumulador/n); 
+    //std::cout<< des<<" desviacion estandar"<< endl;
+    aux2= n/2; //Para obtener la posición intermedia del arreglo
+    //std::cout<< aux2<< " mediana "<<endl;
+    //std::cout<< p.desviacion<< " desviacion guardada en p.desviacion"<<endl;
+    med = x[aux2];
+    //std::cout<<med<<" mediana dentro de fincion"<<endl;
+    mod = x[xmoda];
+    //std::cout<<"fin funcion"<<endl;
 }
 
-void promedio(unsigned int suma, puntajes p){
-    float prom;
+void promedio(unsigned int suma){
     prom = suma /(float)contador;
-    p.promedio = prom;
+    //std::cout<< prom<< " promedio dentro de la funcion nem"<<endl;
 } 
 
 void imprimir()
@@ -145,21 +149,21 @@ void generarresultado(){
             case 1:
                 //fpromedio(dato, prueba.nem);
                 contador++;
-                prueba.nem = prueba.nem + std::stof(dato);
+                prueba.nem = prueba.nem + std::stoi(dato);
                 listaNEM[ne]=std::stoi(dato);
                 ne++;
                 break;
             case 2:
                 //contadorR++;
                 //std::cout << dato << "  ranking" << std::endl;
-                prueba.ranking = prueba.ranking + std::stof(dato);
+                prueba.ranking = prueba.ranking + std::stoi(dato);
                 listaRAN[ra]=std::stoi(dato);
                 ra++;
                 break;
             case 3:
                 //contadorM++;
                 //std::cout << dato << "  matematica" << std::endl;
-                prueba.matematica = prueba.matematica + std::stof(dato);
+                prueba.matematica = prueba.matematica + std::stoi(dato);
                 listaMAT[ma]=std::stoi(dato);
                 ma++;
                 break;
@@ -173,31 +177,42 @@ void generarresultado(){
             case 5:
                 //contadorC++;
                 //std::cout << dato << "  ciencia" << std::endl;
-                prueba.ciencias = prueba.ciencias + std::stof(dato);
+                prueba.ciencias = prueba.ciencias + std::stoi(dato);
                 listaCIE[ci]=std::stoi(dato);
                 ci++;
                 break;
             case 6:
                 //contadorH++;
                 //std::cout << dato << "  historia" << std::endl;
-                prueba.historia = prueba.historia + std::stof(dato);
+                prueba.historia = prueba.historia + std::stoi(dato);
                 listaHIS[hi]=std::stoi(dato);
                 hi++;
             break;
             }
 
         }
-        /*if(a==4){
+        if(a==5){
             break;
-        }*/
+        }
     }
-    
-    promedio(prueba.nem, NEM);
-    promedio(prueba.ranking, RANKING);
-    promedio(prueba.matematica, MATEMATICA);
-    promedio(prueba.lenguaje, LENGUAJE);
-    promedio(prueba.ciencias, CIENCIA);
-    promedio(prueba.historia, HISTORIA);
+    lectura.close();
+    //std::cout<<prueba.nem<< " suma "<<contador<<" contador antes de funcion"<<endl;
+    //std::cout<<NEM.promedio<<" promedio antes de funcion"<<endl;
+    //std::cout<< prom<<" promedio prom antes f"<<endl;
+    promedio(prueba.nem);
+    //std::cout<< prom<<" promedio prom despues f"<<endl;
+    NEM.promedio = prom;
+    //std::cout<<NEM.promedio<< " promedio despues fincion nem.promedio"<<endl;
+    promedio(prueba.ranking);
+    RANKING.promedio = prom;
+    promedio(prueba.matematica);
+    MATEMATICA.promedio = prom;
+    promedio(prueba.lenguaje);
+    LENGUAJE.promedio = prom;
+    promedio(prueba.ciencias);
+    CIENCIA.promedio = prom;
+    promedio(prueba.historia);
+    HISTORIA.promedio = prom;
     
     ordenar(listaNEM, contador);
     ordenar(listaRAN, contador);
@@ -206,12 +221,36 @@ void generarresultado(){
     ordenar(listaCIE, contador);
     ordenar(listaHIS, contador);
     
+    //std::cout << des <<" antes de la funcion"<<endl;
     desmedmod(listaNEM, contador, NEM);
+    //std::cout<< NEM.desviacion<< " desviaccion nem antes de igualar (despues de funcion)"<<endl;
+    NEM.desviacion = des;
+    //std::cout<< NEM.desviacion<< " desviaccion nem despues de igualar"<<endl;
+    NEM.mediana = med;
+    //std::cout<< NEM.mediana<<" mediana nem despues de iualar"<<endl;
+    //std::cout<< mod <<" moda nem antees de igualar"<<endl;
+    NEM.moda = mod;
+    //std::cout<< NEM.moda<<" medoda nem despues de iualar"<<endl;
     desmedmod(listaRAN, contador, RANKING);
+    RANKING.desviacion = des;
+    RANKING.mediana = med;
+    RANKING.moda = mod;
     desmedmod(listaMAT, contador, MATEMATICA);
+    MATEMATICA.desviacion = des;
+    MATEMATICA.mediana = med;
+    MATEMATICA.moda = mod;
     desmedmod(listaLEN, contador, LENGUAJE);
+    LENGUAJE.desviacion = des;
+    LENGUAJE.mediana = med;
+    LENGUAJE.moda = mod;
     desmedmod(listaCIE, contador, CIENCIA);
+    CIENCIA.desviacion = des;
+    CIENCIA.mediana = med;
+    CIENCIA.moda = mod;
     desmedmod(listaHIS, contador, HISTORIA);
+    HISTORIA.desviacion = des;
+    HISTORIA.mediana = med;
+    HISTORIA.moda = mod;
     
     imprimir();
 }
@@ -220,6 +259,21 @@ void generarresultado(){
 int main(int argc, char** argv) {
     std::cout << "Taller 3: C++ secuencial" << std::endl;
     generarresultado();
+    //std::cout<< prueba.nem<< " suma nem "<< NEM.promedio <<" promedio"<<endl;
+    /*for(int i=0; i< 5;i++){
+        std::cout<<listaNEM[i]<<" nem arreglo"<<endl;
+    }*/
+    //ordenar(listaNEM, contador);
+    //std:cout<<endl;
+    /*for(int i=0; i< 5;i++){
+        std::cout<<listaNEM[i]<<" nem arreglo ordenado"<<endl;
+    }*/
+    //std::cout<<contador<<" contador antes de la funcion desviacion "<<endl;
+    //desmedmod(listaNEM, contador, NEM);
+    //std::cout<< NEM.desviacion<< " desviacion"<< endl;
+    //std::cout<< NEM.moda<< " moda "<< endl;
+    //std::cout<< NEM.mediana<< " mediana"<<endl;
+    //std::cout<<NEM.promedio<< " promedio"<<endl;
     delete [] listaNEM;
     delete [] listaRAN;
     delete [] listaMAT;
