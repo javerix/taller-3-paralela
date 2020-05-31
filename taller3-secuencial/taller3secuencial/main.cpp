@@ -176,7 +176,7 @@ void generarresultado(){
             }
 
         }
-        /*if(a==5){ //sirve para limitar la cantiddad de filas leidas del archivo
+        /*if(a==15){ //sirve para limitar la cantiddad de filas leidas del archivo
             break;
         }*/
     }
