@@ -31,3 +31,5 @@
 *.out
 *.app
 /taller3-secuencial/taller3secuencial/build/
+/taller3-omp/taller3opm/dist/
+/taller3-omp/taller3opm/build/
