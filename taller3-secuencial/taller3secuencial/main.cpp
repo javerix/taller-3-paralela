@@ -57,18 +57,18 @@ void ordenar(int x[], int n) //Metodo de ordenamiento seleccion
     }
 }
 
-void desmedmod(int x[], int n, puntajes p){ // calculo de, desviacion estandar, media y moda
+void desmedmod(int x[], int n, puntajes p){ // calculo de desviacion estandar, media y moda
     float prome = p.promedio;
     float acumulador = 0; // El acumulador es La sumatoria de (Xi - Xpromedio) al cuadrado
     int aux2; 
-    int cont = 0, contmoda = 0, xmoda=0, aux=0;
+    int cont = 0, contmoda = 0, xmoda=0, aux=0; //xmoda es una variable que guarda la posición del puntaje con mayor contador contmoda
     for(int i=0; i<n; i++){
         acumulador = acumulador + ((x[i] - prome)*(x[i] - prome));
         if(x[i]!=aux || i+1 == n){
             if(i+1 ==n){
                 cont++;
             }
-            if(cont > contmoda){
+            if(cont > contmoda){ //Se verifica que el contador del moda guardado sea superado por otro
                 contmoda = cont;
                 xmoda = i-1;
             }
@@ -234,7 +234,7 @@ void generarresultado(){
 int main(int argc, char** argv) {
     std::cout << "Taller 3: C++ secuencial" << std::endl;
     generarresultado();
-    delete [] listaNEM;
+    delete [] listaNEM; //Para eliminar arreglos y liberar espacios en la memoria
     delete [] listaRAN;
     delete [] listaMAT;
     delete [] listaLEN;
